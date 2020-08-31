@@ -147,29 +147,29 @@ public class Patient implements Serializable {
     }
 
     public JsonObject serialize() {
-        JsonObject dataObject = new JsonObject();
+        JsonObject data = new JsonObject();
 
-        dataObject.addProperty("id", this.id);
-        dataObject.addProperty("firstName", this.firstName);
-        dataObject.addProperty("lastName", this.lastName);
-        dataObject.addProperty("district", this.district);
-        dataObject.addProperty("locationX", this.locationX);
-        dataObject.addProperty("locationY", this.locationY);
-        dataObject.addProperty("district", this.district);
-        dataObject.addProperty("severityLevel", this.severityLevel);
-        dataObject.addProperty("gender", this.gender);
-        dataObject.addProperty("contact", this.contact);
-        dataObject.addProperty("email", this.email);
-        dataObject.addProperty("age", this.age);
-        dataObject.addProperty("admitDate", this.admitDate != null ? this.admitDate.toString() : null);
-        dataObject.addProperty("admittedBy", this.admittedBy);
-        dataObject.addProperty("dischargeDate", this.dischargeDate != null ? this.dischargeDate.toString() : null);
-        dataObject.addProperty("dischargedBy", this.dischargedBy);
+        data.addProperty("id", this.id);
+        data.addProperty("firstName", this.firstName);
+        data.addProperty("lastName", this.lastName);
+        data.addProperty("district", this.district);
+        data.addProperty("locationX", this.locationX);
+        data.addProperty("locationY", this.locationY);
+        data.addProperty("district", this.district);
+        data.addProperty("severityLevel", this.severityLevel);
+        data.addProperty("gender", this.gender);
+        data.addProperty("contact", this.contact);
+        data.addProperty("email", this.email);
+        data.addProperty("age", this.age);
+        data.addProperty("admitDate", this.admitDate != null ? this.admitDate.toString() : null);
+        data.addProperty("admittedBy", this.admittedBy);
+        data.addProperty("dischargeDate", this.dischargeDate != null ? this.dischargeDate.toString() : null);
+        data.addProperty("dischargedBy", this.dischargedBy);
 
-        return dataObject;
+        return data;
     }
 
-    public void loadModel() {
+    public void getModel() {
         try {
             Connection connection = DBConnectionPool.getInstance().getConnection();
             PreparedStatement statement;

@@ -90,7 +90,7 @@ public class PatientServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Patient patient = new Patient();
-        patient.loadModel();
+        patient.getModel();
         System.out.println("doGet success");
         //response.getWriter().append("Served at: ").append(request.getContextPath());
         //RequestDispatcher dispatcher = request.getRequestDispatcher("../web/PatientRegister.jsp");
