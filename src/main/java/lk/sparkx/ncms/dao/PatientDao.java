@@ -14,11 +14,8 @@ public class PatientDao {
         PreparedStatement preparedStatement = null;
         int result = 0;
 
-        //Class.forName("com.mysql.jdbc.Driver");
-
         try {
             connection = DBConnectionPool.getInstance().getConnection();
-
 
              // Step 2:Create a statement using connection object
             preparedStatement = connection.prepareStatement(INSERT_USERS_SQL);

@@ -37,13 +37,6 @@ public class PatientServlet extends HttpServlet {
         java.util.Date dateDischarged = new java.util.Date();
         Date dischargeDate = new Date(dateDischarged.getTime());
 
-        /*String paramDischarge = request.getParameter("admitDate");
-        Date dischargeDate = null;
-        try {
-            dischargeDate = (Date) date.parse(paramDischarge);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }*/
         String dischargedBy = request.getParameter("dischargedBy");
 
         
