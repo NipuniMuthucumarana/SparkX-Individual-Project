@@ -14,8 +14,6 @@ public class DoctorDao {
         PreparedStatement preparedStatement = null;
         int result = 0;
 
-        //Class.forName("com.mysql.jdbc.Driver");
-
         try {
             connection = DBConnectionPool.getInstance().getConnection();
 

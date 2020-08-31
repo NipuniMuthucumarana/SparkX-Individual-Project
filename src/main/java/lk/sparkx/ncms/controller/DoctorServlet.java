@@ -47,6 +47,6 @@ public class DoctorServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Doctor doctor = new Doctor();
         doctor.getModel();
-        System.out.println("doGet success");
+        System.out.println("doGet doctor success");
     }
 }

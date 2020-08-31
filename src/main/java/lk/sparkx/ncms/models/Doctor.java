@@ -73,6 +73,7 @@ public class Doctor implements Serializable {
             }
 
             connection.close();
+
         } catch (Exception exception) {
 
         }
