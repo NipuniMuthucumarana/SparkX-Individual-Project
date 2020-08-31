@@ -5,11 +5,6 @@
          version="4.0">
     <display-name>NCMS</display-name>
 
-    <!--<servlet>
-        <servlet-name>HelloWorld</servlet-name>
-        <servlet-class>lk.sparkx.ncms.HelloWorld</servlet-class>
-    </servlet>-->
-
     <servlet>
         <servlet-name>PatientServlet</servlet-name>
         <servlet-class>lk.sparkx.ncms.controller.PatientServlet</servlet-class>
@@ -18,6 +13,11 @@
     <servlet>
         <servlet-name>DoctorServlet</servlet-name>
         <servlet-class>lk.sparkx.ncms.controller.DoctorServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>HospitalServlet</servlet-name>
+        <servlet-class>lk.sparkx.ncms.controller.HospitalServlet</servlet-class>
     </servlet>
 
     <!--<servlet-mapping>
@@ -33,6 +33,11 @@
     <servlet-mapping>
         <servlet-name>DoctorServlet</servlet-name>
         <url-pattern>/doctorRegister</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>HospitalServlet</servlet-name>
+        <url-pattern>/hospitalRegister</url-pattern>
     </servlet-mapping>
 
 </web-app>

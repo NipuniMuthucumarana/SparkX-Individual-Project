@@ -1,9 +1,7 @@
 package lk.sparkx.ncms.controller;
 
 import lk.sparkx.ncms.dao.DoctorDao;
-import lk.sparkx.ncms.dao.PatientDao;
 import lk.sparkx.ncms.models.Doctor;
-import lk.sparkx.ncms.models.Patient;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

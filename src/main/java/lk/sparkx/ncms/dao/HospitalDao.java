@@ -5,26 +5,27 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import lk.sparkx.ncms.models.Doctor;
+import lk.sparkx.ncms.models.Hospital;
 
-public class DoctorDao {
-    public String registerDoctor(Doctor doctor) {
-        String INSERT_USERS_SQL = "INSERT INTO doctor (id, name, hospital_id, is_director) VALUES (?, ?, ?, ?)";
+public class HospitalDao {
+    public String registerHospital(Hospital hospital) {
+        String INSERT_USERS_SQL = "INSERT INTO hospital (id, name, district, location_x, location_y, build_date) VALUES (?, ?, ?, ?, ?, ?)";
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         int result = 0;
-
-        //Class.forName("com.mysql.jdbc.Driver");
 
         try {
             connection = DBConnectionPool.getInstance().getConnection();
 
             // Step 2:Create a statement using connection object
             preparedStatement = connection.prepareStatement(INSERT_USERS_SQL);
-            preparedStatement.setString(1, doctor.getId());
-            preparedStatement.setString(2, doctor.getName());
-            preparedStatement.setString(3, doctor.getHospitalId());
-            preparedStatement.setBoolean(4, doctor.isDirector());
+            preparedStatement.setString(1, hospital.getId());
+            preparedStatement.setString(2, hospital.getName());
+            preparedStatement.setString(3, hospital.getDistrict());
+            preparedStatement.setInt(4, hospital.getLocationX());
+            preparedStatement.setInt(5, hospital.getLocationY());
+            preparedStatement.setDate(6, hospital.getBuildDate());
 
             System.out.println(preparedStatement);
             // Step 3: Execute the query or update query

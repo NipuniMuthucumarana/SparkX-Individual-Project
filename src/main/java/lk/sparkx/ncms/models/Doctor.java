@@ -6,7 +6,6 @@ import lk.sparkx.ncms.dao.DBConnectionPool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Date;
 import java.io.Serializable;
 
 public class Doctor implements Serializable {
@@ -65,7 +64,6 @@ public class Doctor implements Serializable {
             ResultSet resultSet;
 
             statement = connection.prepareStatement("SELECT * FROM doctor WHERE id=?");
-            //statement.setString(1, this.id);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 this.id = resultSet.getString("id");
