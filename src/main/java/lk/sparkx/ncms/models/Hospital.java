@@ -1,13 +1,8 @@
 package lk.sparkx.ncms.models;
 
 import com.google.gson.JsonObject;
-import lk.sparkx.ncms.dao.DBConnectionPool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Date;
-import java.io.Serializable;
 
 public class Hospital {
     private String id;
@@ -78,13 +73,13 @@ public class Hospital {
         return data;
     }
 
-    public void getModel() {
+    /*public void getModel() {
         try {
             Connection connection = DBConnectionPool.getInstance().getConnection();
             PreparedStatement statement;
             ResultSet resultSet;
 
-            statement = connection.prepareStatement("SELECT * FROM patients WHERE id=? LIMIT 1");
+            statement = connection.prepareStatement("SELECT * FROM hospital WHERE id=? LIMIT 1");
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 this.id = resultSet.getString("id");
@@ -99,5 +94,14 @@ public class Hospital {
         } catch (Exception exception) {
 
         }
+    }*/
+
+    public double assignHospital(int patientLocationX, int patientLocationY) {
+        int distanceX = Math.abs(this.locationX - patientLocationX);
+        int distanceY = Math.abs(this.locationY - patientLocationY);
+
+        double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+
+        return distance;
     }
 }

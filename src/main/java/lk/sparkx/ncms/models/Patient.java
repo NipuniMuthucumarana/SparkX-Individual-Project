@@ -1,15 +1,10 @@
 package lk.sparkx.ncms.models;
 
 import com.google.gson.JsonObject;
-import lk.sparkx.ncms.dao.DBConnectionPool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Date;
-import java.io.Serializable;
 
-public class Patient implements Serializable {
+public class Patient {
     private int id;
     private String firstName;
     private String lastName;
@@ -169,7 +164,7 @@ public class Patient implements Serializable {
         return data;
     }
 
-    public void getModel() {
+    /*public void getModel() {
         try {
             Connection connection = DBConnectionPool.getInstance().getConnection();
             PreparedStatement statement;
@@ -200,5 +195,5 @@ public class Patient implements Serializable {
         } catch (Exception exception) {
 
         }
-    }
+    }*/
 }

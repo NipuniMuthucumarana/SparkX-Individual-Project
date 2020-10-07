@@ -6,7 +6,6 @@ import lk.sparkx.ncms.dao.DBConnectionPool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.io.Serializable;
 
 public class User {
     private String username;
