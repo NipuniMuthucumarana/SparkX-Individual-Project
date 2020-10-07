@@ -2,6 +2,7 @@ package lk.sparkx.ncms.controller;
 
 import lk.sparkx.ncms.dao.DBConnectionPool;
 import lk.sparkx.ncms.dao.PatientDao;
+import lk.sparkx.ncms.models.Hospital;
 import lk.sparkx.ncms.models.Patient;
 
 import javax.servlet.ServletException;
@@ -144,6 +145,10 @@ public class PatientServlet extends HttpServlet {
                 printWriter.println("Discharge Date: " + dischargeDate);
                 printWriter.println("Discharged By: " + dischargedBy);
                 System.out.println("doGet patient success");
+
+                Hospital hospital = new Hospital();
+                String nearestHospital = hospital.assignHospital(locationX, locationY);
+                System.out.println("Nearest hospital: " + nearestHospital);
 
                 /*JSONObject obj = new JSONObject();
 

@@ -1,10 +1,8 @@
 package lk.sparkx.ncms.controller;
 
-import lk.sparkx.ncms.dao.DoctorDao;
+import lk.sparkx.ncms.dao.DBConnectionPool;
 import lk.sparkx.ncms.dao.HospitalDao;
-import lk.sparkx.ncms.models.Doctor;
 import lk.sparkx.ncms.models.Hospital;
-import lk.sparkx.ncms.models.Patient;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,7 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 @WebServlet(name = "HospitalServlet")
 public class HospitalServlet extends HttpServlet {
@@ -54,8 +56,70 @@ public class HospitalServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Hospital hospital = new Hospital();
-        hospital.getModel();
-        System.out.println("doGet success");
+        String district = request.getParameter("district");
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        int result = 0;
+
+        try {
+            connection = DBConnectionPool.getInstance().getConnection();
+            //PreparedStatement statement;
+            ResultSet resultSet;
+
+            statement = connection.prepareStatement("SELECT * FROM hospital WHERE district=?");
+            statement.setString(1, district);
+            System.out.println(statement);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String id = resultSet.getString("id");
+                String name = resultSet.getString("name");
+                //String district = resultSet.getString("district");
+                int locationX = resultSet.getInt("location_x");
+                int locationY = resultSet.getInt("location_y");
+                Date buildDate = resultSet.getDate("build_date");
+
+                /*System.out.println("Id: " + id);
+                System.out.println("Name: " + name);
+                System.out.println("HospitalId: " + dis);
+                System.out.println("Is Director: " + isDirector);
+                System.out.println("doGet doctor success");*/
+
+                PrintWriter printWriter = response.getWriter();
+
+                printWriter.println("Id: " + id);
+                printWriter.println("Name: " + name);
+                printWriter.println("District: " + district);
+                printWriter.println("Location_X: " + locationX);
+                printWriter.println("Location_Y: " + locationY);
+                printWriter.println("Build Date: " + buildDate);
+                System.out.println("doGet doctor success");
+
+                /*JSONObject hospitalObj = new JSONObject();
+
+                hospitalObj.put("id",id);
+                hospitalObj.put("name",name);
+                hospitalObj.put("district",district);
+                hospitalObj.put("locationX",locationX);
+                hospitalObj.put("locationY",locationY);
+                hospitalObj.put("buildDate",buildDate);
+
+                StringWriter out = new StringWriter();
+                hospitalObj.writeJSONString(out);
+
+                String jsonText = out.toString();
+                System.out.print(jsonText);*/
+            }
+
+
+
+            connection.close();
+
+        } catch (Exception exception) {
+
+        }
     }
+
+
 }

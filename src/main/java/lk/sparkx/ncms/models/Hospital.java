@@ -1,8 +1,18 @@
 package lk.sparkx.ncms.models;
 
 import com.google.gson.JsonObject;
+import lk.sparkx.ncms.dao.DBConnectionPool;
 
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.util.Comparator.comparingDouble;
+
 
 public class Hospital {
     private String id;
@@ -11,6 +21,14 @@ public class Hospital {
     private int locationX;
     private int locationY;
     private Date buildDate;
+
+    public Hospital() {
+
+    }
+
+    public Hospital(String district){
+        this.district = district;
+    }
 
     public String getId() {
         return id;
@@ -73,35 +91,42 @@ public class Hospital {
         return data;
     }
 
-    /*public void getModel() {
+    public String assignHospital(int patientLocationX, int patientLocationY) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        Map<String, Double> distance = new HashMap<String, Double>();
+
+        double dist;
+        String nearestHospital = "";
+
         try {
-            Connection connection = DBConnectionPool.getInstance().getConnection();
-            PreparedStatement statement;
+            connection = DBConnectionPool.getInstance().getConnection();
             ResultSet resultSet;
 
-            statement = connection.prepareStatement("SELECT * FROM hospital WHERE id=? LIMIT 1");
+            statement = connection.prepareStatement("SELECT * FROM hospital");
+            System.out.println(statement);
             resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                this.id = resultSet.getString("id");
-                this.name = resultSet.getString("name");
-                this.district = resultSet.getString("district");
-                this.locationX = resultSet.getInt("location_x");
-                this.locationY = resultSet.getInt("location_y");
-                this.buildDate = resultSet.getDate("build_date");
-            }
 
+            while (resultSet.next()) {
+                String id = resultSet.getString("id");
+                int locationX = resultSet.getInt("location_x");
+                int locationY = resultSet.getInt("location_y");
+                int distanceX = Math.abs(locationX - patientLocationX);
+                int distanceY = Math.abs(locationY - patientLocationY);
+
+                dist = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+                distance.put(id,dist);
+
+            }
+            System.out.println(distance);
+            System.out.println(Collections.min(distance.values()));
+            nearestHospital = Collections.min(distance.entrySet(), comparingDouble(Map.Entry::getValue)).getKey();
+            System.out.println(nearestHospital);
             connection.close();
+
         } catch (Exception exception) {
 
         }
-    }*/
-
-    public double assignHospital(int patientLocationX, int patientLocationY) {
-        int distanceX = Math.abs(this.locationX - patientLocationX);
-        int distanceY = Math.abs(this.locationY - patientLocationY);
-
-        double distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
-
-        return distance;
+        return nearestHospital;
     }
 }
