@@ -93,12 +93,14 @@ public class PatientServlet extends HttpServlet {
 
         Connection connection = null;
         PreparedStatement statement = null;
+        PreparedStatement statement2 = null;
         int result = 0;
 
         try {
             connection = DBConnectionPool.getInstance().getConnection();
             //PreparedStatement statement;
             ResultSet resultSet;
+            ResultSet resultSet2;
 
             statement = connection.prepareStatement("SELECT * FROM patient WHERE id=?");
             statement.setString(1, id);
@@ -154,6 +156,21 @@ public class PatientServlet extends HttpServlet {
                 Bed bed = new Bed();
                 int bedId = bed.allocateBed(nearestHospital, id);
                 System.out.println("Bed ID: " + bedId);
+
+                if(bedId == 0){
+                    statement2 = connection.prepareStatement("SELECT distinct id FROM hospital where id !='" + nearestHospital + "'");
+                    System.out.println(statement2);
+                    resultSet2 = statement2.executeQuery();
+                    String hosId ="";
+                    if (bedId==0) {
+                        if(resultSet2.next()) {
+                            hosId = resultSet2.getString("id");
+                            System.out.println(hosId);
+                        }
+                        bed.allocateBed(hosId, id);
+                    }
+
+                }
                 /*JSONObject obj = new JSONObject();
 
                 obj.put("id",id);

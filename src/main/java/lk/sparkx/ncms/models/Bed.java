@@ -42,6 +42,7 @@ public class Bed {
         Connection connection = null;
         PreparedStatement statement = null;
         PreparedStatement statement2 = null;
+        PreparedStatement statement3 = null;
         int result =0;
         int [] bed = new int[10];
 
@@ -64,11 +65,11 @@ public class Bed {
                     break;
                 }
             }
-            statement2 = connection.prepareStatement("INSERT INTO hospital_bed (id, hospital_id, patient_id) VALUES ("+bedId+",'"+hospitalId+"','"+patientId+"')");
-            System.out.println(statement2);
-            /*statement2.setInt(1, bedId);
-            statement2.setString(2, getHospitalId());
-            statement2.setString(3, getPatientId());*/
+            if(bedId!=0) {
+                statement2 = connection.prepareStatement("INSERT INTO hospital_bed (id, hospital_id, patient_id) VALUES (" + bedId + ",'" + hospitalId + "','" + patientId + "')");
+                System.out.println(statement2);
+            }
+            
             result = statement2.executeUpdate();
             /*if(result!=0){
                 System.out.println("success");
