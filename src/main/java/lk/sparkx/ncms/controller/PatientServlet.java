@@ -2,6 +2,7 @@ package lk.sparkx.ncms.controller;
 
 import lk.sparkx.ncms.dao.DBConnectionPool;
 import lk.sparkx.ncms.dao.PatientDao;
+import lk.sparkx.ncms.models.Bed;
 import lk.sparkx.ncms.models.Hospital;
 import lk.sparkx.ncms.models.Patient;
 
@@ -150,6 +151,9 @@ public class PatientServlet extends HttpServlet {
                 String nearestHospital = hospital.assignHospital(locationX, locationY);
                 System.out.println("Nearest hospital: " + nearestHospital);
 
+                Bed bed = new Bed();
+                int bedId = bed.allocateBed(nearestHospital, id);
+                System.out.println("Bed ID: " + bedId);
                 /*JSONObject obj = new JSONObject();
 
                 obj.put("id",id);
