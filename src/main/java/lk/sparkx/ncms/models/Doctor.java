@@ -1,8 +1,12 @@
 package lk.sparkx.ncms.models;
 
 import com.google.gson.JsonObject;
+import lk.sparkx.ncms.dao.DBConnectionPool;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class Doctor implements Serializable {
     private String id;
@@ -53,26 +57,42 @@ public class Doctor implements Serializable {
         return data;
     }
 
-    /*public void getModel(String id) {
+    public void dischargePatients(String patientId, String hospitalId) {
         Connection connection = null;
         PreparedStatement statement = null;
+        PreparedStatement statement2 = null;
         int result = 0;
 
-        Doctor dr = new Doctor();
+        //Doctor dr = new Doctor();
         try {
             connection = DBConnectionPool.getInstance().getConnection();
             //PreparedStatement statement;
             ResultSet resultSet;
 
-            statement = connection.prepareStatement("SELECT * FROM doctor WHERE id=?");
-            statement.setString(1, id);
-            System.out.println(statement);
-            resultSet = statement.executeQuery();
+            statement2 = connection.prepareStatement("SELECT * FROM doctor WHERE hospital_id='" +hospitalId + "' AND is_director=1");
+            resultSet = statement2.executeQuery();
+            System.out.println(statement2);
             while (resultSet.next()) {
-                //this.id = resultSet.getString("id");
+                String director = resultSet.getString("id");
+                System.out.println(director);
+                statement = connection.prepareStatement("UPDATE patient SET discharge_date=? , discharged_by= '" + director + "' WHERE id = '" + patientId + "'");
+
+
+                statement.setDate(1, new java.sql.Date(new java.util.Date().getTime()));
+                //statement.setString(2, directorId);
+
+                System.out.println(statement);
+                result = statement.executeUpdate();
+                if(result!=0){
+                    System.out.println("success");
+                }else
+                    System.out.println("Failed");
+            }
+            /*while (resultSet.next()) {
+                this.id = resultSet.getString("id");
                 this.name = resultSet.getString("name");
                 this.hospitalId = resultSet.getString("hospital_id");
-                this.isDirector = resultSet.getBoolean("is_director");
+                //this.isDirector = resultSet.getBoolean("is_director");
 
                 /*JSONObject obj = new JSONObject();
 
@@ -85,8 +105,10 @@ public class Doctor implements Serializable {
                 obj.writeJSONString(out);
 
                 String jsonText = out.toString();
-                System.out.print(jsonText);
-            }
+                System.out.print(jsonText);*/
+
+
+            //}
 
 
 
@@ -104,6 +126,6 @@ public class Doctor implements Serializable {
         }
 
 
-    }*/
+    }
 
 }

@@ -2,6 +2,8 @@ package lk.sparkx.ncms.controller;
 
 import lk.sparkx.ncms.dao.DBConnectionPool;
 import lk.sparkx.ncms.dao.HospitalDao;
+import lk.sparkx.ncms.models.Bed;
+import lk.sparkx.ncms.models.Doctor;
 import lk.sparkx.ncms.models.Hospital;
 
 import javax.servlet.ServletException;
@@ -120,6 +122,22 @@ public class HospitalServlet extends HttpServlet {
 
         }
     }
+
+    /* Discharge patient by director and make the bed available for other patients */
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        String patientId = request.getParameter("id");
+        String hospitalId = request.getParameter("hospital_id");
+
+        Doctor doctor = new Doctor();
+        doctor.dischargePatients(patientId, hospitalId);
+
+        Bed bed = new Bed();
+        bed.makeAvailable(patientId);
+    }
+
 
 
 }
