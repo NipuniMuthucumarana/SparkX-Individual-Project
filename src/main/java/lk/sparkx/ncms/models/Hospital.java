@@ -116,8 +116,8 @@ public class Hospital {
 
                 dist = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
                 distance.put(id,dist);
-
             }
+
             System.out.println(distance);
             System.out.println(Collections.min(distance.values()));
             nearestHospital = Collections.min(distance.entrySet(), comparingDouble(Map.Entry::getValue)).getKey();

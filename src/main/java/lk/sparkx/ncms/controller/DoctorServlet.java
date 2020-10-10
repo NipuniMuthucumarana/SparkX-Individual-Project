@@ -53,14 +53,6 @@ public class DoctorServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = request.getParameter("id");
-        /*String name = request.getParameter("name");
-        String hospitalId = request.getParameter("hospitalId");
-        Boolean isDirector = Boolean.valueOf(request.getParameter("isDirector"));*/
-
-        //Doctor doctor = new Doctor();
-
-        //doctor.getModel(id);
-
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -68,7 +60,6 @@ public class DoctorServlet extends HttpServlet {
 
         try {
             connection = DBConnectionPool.getInstance().getConnection();
-            //PreparedStatement statement;
             ResultSet resultSet;
 
             statement = connection.prepareStatement("SELECT * FROM doctor WHERE id=?");
@@ -77,7 +68,6 @@ public class DoctorServlet extends HttpServlet {
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                //String id = resultSet.getString("id");
                 String name = resultSet.getString("name");
                 String hospitalId = resultSet.getString("hospital_id");
                 Boolean isDirector = resultSet.getBoolean("is_director");
@@ -109,9 +99,6 @@ public class DoctorServlet extends HttpServlet {
                 String jsonText = out.toString();
                 System.out.print(jsonText);
             }
-
-
-
             connection.close();
 
         } catch (Exception exception) {

@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+
 public class Bed {
     private int id;
     private String hospitalId;
@@ -39,6 +40,9 @@ public class Bed {
         setHospitalId(hospitalId);
         setPatientId(patientId);
         int bedId = 0;
+        int noOfBeds = 10;
+        int bedCount = 0;
+
         Connection connection = null;
         PreparedStatement statement = null;
         PreparedStatement statement2 = null;
@@ -49,8 +53,6 @@ public class Bed {
         try {
             connection = DBConnectionPool.getInstance().getConnection();
             ResultSet resultSet;
-
-
             statement = connection.prepareStatement("SELECT * FROM hospital_bed where hospital_id= '" + getHospitalId() + "'");
             System.out.println(statement);
             resultSet = statement.executeQuery();
@@ -59,24 +61,18 @@ public class Bed {
                 int id = resultSet.getInt("id");
                 bed[id-1]=id;
             }
-            for(int i=0; i<10; i++){
+            for(int i=0; i< noOfBeds; i++){
                 if(bed[i]==0){
                     bedId = i+1;
+                    bedCount = bedId;
                     break;
                 }
             }
             if(bedId!=0) {
                 statement2 = connection.prepareStatement("INSERT INTO hospital_bed (id, hospital_id, patient_id) VALUES (" + bedId + ",'" + hospitalId + "','" + patientId + "')");
                 System.out.println(statement2);
+                result = statement2.executeUpdate();
             }
-            
-            result = statement2.executeUpdate();
-            /*if(result!=0){
-                System.out.println("success");
-            }else
-                System.out.println("Failed");
-
-            System.out.println(statement2);*/
             connection.close();
 
         } catch (Exception exception) {

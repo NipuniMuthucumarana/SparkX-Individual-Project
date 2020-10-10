@@ -2,6 +2,7 @@ package lk.sparkx.ncms.controller;
 
 import lk.sparkx.ncms.dao.DBConnectionPool;
 import lk.sparkx.ncms.dao.PatientDao;
+import lk.sparkx.ncms.dao.QueueDao;
 import lk.sparkx.ncms.models.Bed;
 import lk.sparkx.ncms.models.Hospital;
 import lk.sparkx.ncms.models.Patient;
@@ -67,16 +68,11 @@ public class PatientServlet extends HttpServlet {
         PatientDao patientDao = new PatientDao();
         String patientRegistered = patientDao.registerPatient(patient);
 
-        if(patientRegistered.equals("SUCCESS"))   //On success, you can display a message to user on Home page
-        {
+        if(patientRegistered.equals("SUCCESS")) { //On success, you can display a message to user on Home page
+
             System.out.println("Success");
-            //request.getRequestDispatcher("/PatientDetails.jsp").forward(request, response);
-        }
-        else   //On Failure, display a meaningful message to the User.
-        {
+        } else {  //On Failure, display a meaningful message to the User.
             System.out.println("Failed");
-            //request.setAttribute("errMessage", patientRegistered);
-            //request.getRequestDispatcher("/PatientRegister.jsp").forward(request, response);
         }
 
         try {
@@ -98,7 +94,6 @@ public class PatientServlet extends HttpServlet {
 
         try {
             connection = DBConnectionPool.getInstance().getConnection();
-            //PreparedStatement statement;
             ResultSet resultSet;
             ResultSet resultSet2;
 
@@ -123,12 +118,6 @@ public class PatientServlet extends HttpServlet {
                 String admittedBy = resultSet.getString("admitted_by");
                 Date dischargeDate = resultSet.getDate("discharge_date");
                 String dischargedBy = resultSet.getString("discharged_by");
-
-                /*System.out.println("Id: " + id);
-                System.out.println("Name: " + name);
-                System.out.println("HospitalId: " + hospitalId);
-                System.out.println("Is Director: " + isDirector);
-                System.out.println("doGet doctor success");*/
 
                 PrintWriter printWriter = response.getWriter();
 
@@ -156,37 +145,32 @@ public class PatientServlet extends HttpServlet {
                 Bed bed = new Bed();
                 int bedId = bed.allocateBed(nearestHospital, id);
                 System.out.println("Bed ID: " + bedId);
+                int bedNo = 0;
 
                 if(bedId == 0){
                     statement2 = connection.prepareStatement("SELECT distinct id FROM hospital where id !='" + nearestHospital + "'");
                     System.out.println(statement2);
                     resultSet2 = statement2.executeQuery();
                     String hosId ="";
-                    if (bedId==0) {
-                        if(resultSet2.next()) {
+                    int queueLength;
+
+                    /* Allocate a bed */
+                    while(resultSet2.next()) {
+                        if(bedId==0) {
                             hosId = resultSet2.getString("id");
                             System.out.println(hosId);
+                            bedId = bed.allocateBed(hosId, id);
                         }
-                        bed.allocateBed(hosId, id);
+                    }
+                    /* If there is no available beds, add to queue */
+                    bedNo = bedId;
+                    if(bedNo == 0){
+                        QueueDao queue = new QueueDao();
+                        queueLength = queue.addToQueue(id);
                     }
 
                 }
-                /*JSONObject obj = new JSONObject();
-
-                obj.put("id",id);
-                obj.put("name",name);
-                obj.put("hospitalId",hospitalId);
-                obj.put("isDirector",isDirector);
-
-                StringWriter out = new StringWriter();
-                obj.writeJSONString(out);
-
-                String jsonText = out.toString();
-                System.out.print(jsonText);*/
             }
-
-
-
             connection.close();
 
         } catch (Exception exception) {

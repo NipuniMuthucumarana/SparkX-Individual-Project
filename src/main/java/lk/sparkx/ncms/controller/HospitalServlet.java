@@ -82,12 +82,6 @@ public class HospitalServlet extends HttpServlet {
                 int locationY = resultSet.getInt("location_y");
                 Date buildDate = resultSet.getDate("build_date");
 
-                /*System.out.println("Id: " + id);
-                System.out.println("Name: " + name);
-                System.out.println("HospitalId: " + dis);
-                System.out.println("Is Director: " + isDirector);
-                System.out.println("doGet doctor success");*/
-
                 PrintWriter printWriter = response.getWriter();
 
                 printWriter.println("Id: " + id);
@@ -98,24 +92,7 @@ public class HospitalServlet extends HttpServlet {
                 printWriter.println("Build Date: " + buildDate);
                 System.out.println("doGet doctor success");
 
-                /*JSONObject hospitalObj = new JSONObject();
-
-                hospitalObj.put("id",id);
-                hospitalObj.put("name",name);
-                hospitalObj.put("district",district);
-                hospitalObj.put("locationX",locationX);
-                hospitalObj.put("locationY",locationY);
-                hospitalObj.put("buildDate",buildDate);
-
-                StringWriter out = new StringWriter();
-                hospitalObj.writeJSONString(out);
-
-                String jsonText = out.toString();
-                System.out.print(jsonText);*/
             }
-
-
-
             connection.close();
 
         } catch (Exception exception) {
