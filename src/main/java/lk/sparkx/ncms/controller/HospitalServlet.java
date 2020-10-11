@@ -112,7 +112,7 @@ public class HospitalServlet extends HttpServlet {
         doctor.dischargePatients(patientId, hospitalId);
 
         Bed bed = new Bed();
-        bed.makeAvailable(patientId);
+        bed.makeAvailable(patientId, hospitalId);
     }
 
 

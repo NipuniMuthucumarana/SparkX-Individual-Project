@@ -1,11 +1,10 @@
 package lk.sparkx.ncms.dao;
 
+import lk.sparkx.ncms.models.Hospital;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
-import lk.sparkx.ncms.models.Doctor;
-import lk.sparkx.ncms.models.Hospital;
 
 public class HospitalDao {
     public String registerHospital(Hospital hospital) {
@@ -39,6 +38,10 @@ public class HospitalDao {
             printSQLException(e);
         }
         return "Oops.. Something went wrong there..!"; // On failure, send a message from here.
+    }
+
+    public  void buildHospital(String patientId){
+
     }
 
     private void printSQLException(SQLException ex) {

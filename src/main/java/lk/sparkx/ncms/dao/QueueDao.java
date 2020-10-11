@@ -1,5 +1,7 @@
 package lk.sparkx.ncms.dao;
 
+import lk.sparkx.ncms.models.Hospital;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,6 +26,7 @@ public class QueueDao {
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
+                String patient = resultSet.getString("patient_id");
                 queue[id-1]=id;
             }
             for(int i=0; i<queueLength; i++){
@@ -37,6 +40,9 @@ public class QueueDao {
                 statement2 = connection.prepareStatement("INSERT INTO patient_queue (id, patient_id) VALUES (" + queueId + ",'" + patientId + "')");
                 System.out.println(statement2);
                 result = statement2.executeUpdate();
+            } else {
+                Hospital hospital = new Hospital();
+                //hospital.setId();
             }
 
             connection.close();

@@ -5,6 +5,8 @@ import lk.sparkx.ncms.dao.DBConnectionPool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Bed {
@@ -82,18 +84,53 @@ public class Bed {
         return  bedId;
     }
 
-    public void makeAvailable(String patientId) {
+    public void makeAvailable(String patientId, String hospitalId) {
         Connection connection = null;
         PreparedStatement statement = null;
+        PreparedStatement statement2 = null;
+        PreparedStatement statement3 = null;
+        PreparedStatement statement4 = null;
+        PreparedStatement statement5 = null;
 
         try {
             connection = DBConnectionPool.getInstance().getConnection();
             int result=0;
+            int result2=0;
+            ResultSet resultSet;
+            ResultSet resultSet2;
+            Map<Integer,String> queueDetails = new HashMap<Integer,String>();
 
             statement = connection.prepareStatement("DELETE FROM hospital_bed WHERE patient_id='"+patientId+"'");
             System.out.println(statement);
             result = statement.executeUpdate();
 
+            statement2 = connection.prepareStatement("SELECT * FROM patient_queue ORDER BY id ASC");
+            System.out.println(statement2);
+            resultSet = statement2.executeQuery();
+
+            if (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String patient = resultSet.getString("patient_id");
+                //queueDetails.put(id,patient);
+                allocateBed(hospitalId, patient);
+
+                statement3 = connection.prepareStatement("DELETE FROM patient_queue where patient_id = '"+patient+"'");
+                System.out.println(statement3);
+                result2 = statement3.executeUpdate();
+
+                statement4 = connection.prepareStatement("SELECT * FROM patient_queue ORDER BY id ASC");
+                System.out.println(statement4);
+                resultSet2 = statement4.executeQuery();
+
+                while(resultSet2.next()) {
+                    int currentId = resultSet2.getInt("id");
+                    int nextId = currentId-1;
+                    System.out.println(nextId);
+                    statement5 = connection.prepareStatement("UPDATE patient_queue SET id=" + nextId + " Where id="+ currentId);
+                    System.out.println(statement5);
+                    statement5.executeUpdate();
+                }
+            }
             connection.close();
 
         } catch (Exception exception) {
