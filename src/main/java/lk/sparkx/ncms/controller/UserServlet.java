@@ -16,20 +16,20 @@ public class UserServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String name = request.getParameter("name");
-        Boolean isMoh = Boolean.valueOf(request.getParameter("isMoh"));
-        Boolean isHospital = Boolean.valueOf(request.getParameter("isHospital"));
+        Boolean moh = Boolean.valueOf(request.getParameter("moh"));
+        Boolean hospital = Boolean.valueOf(request.getParameter("hospital"));
 
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
         user.setName(name);
-        user.setMoh(isMoh);
-        user.setHospital(isHospital);
+        user.setMoh(moh);
+        user.setHospital(hospital);
 
         UserDao userDao = new UserDao();
-        String doctorRegistered = userDao.viewStatistics(user);
+        String userRegistered = userDao.viewStatistics(user);
 
-        if(doctorRegistered.equals("SUCCESS"))   //On success, you can display a message to user on Home page
+        if(userRegistered.equals("SUCCESS"))   //On success, you can display a message to user on Home page
         {
             System.out.println("Success");
         }

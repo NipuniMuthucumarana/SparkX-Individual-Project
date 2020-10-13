@@ -49,6 +49,15 @@ public class HospitalServlet extends HttpServlet {
             System.out.println("Failed");
         }
 
+        String patientId = request.getParameter("id");
+        String hospitalId = request.getParameter("hospital_id");
+
+        Doctor doctor = new Doctor();
+        doctor.dischargePatients(patientId, hospitalId);
+
+        Bed bed = new Bed();
+        bed.makeAvailable(patientId, hospitalId);
+
         try {
             hospitalDao.registerHospital(hospital);
         } catch (Exception e) {

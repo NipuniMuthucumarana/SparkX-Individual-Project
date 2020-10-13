@@ -1,17 +1,18 @@
 package lk.sparkx.ncms.dao;
 
+import lk.sparkx.ncms.models.Patient;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import lk.sparkx.ncms.models.Patient;
-
 public class PatientDao {
     public String registerPatient(Patient patient) {
-        String INSERT_USERS_SQL = "INSERT INTO patient (id, first_name, last_name, district, location_x, location_y, severity_level, gender, contact, email, age, admit_date, admitted_by, discharge_date, discharged_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String INSERT_USERS_SQL = "INSERT INTO patient (id, first_name, last_name, district, location_x, location_y, gender, contact, email, age) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+
         int result = 0;
 
         try {
@@ -19,21 +20,21 @@ public class PatientDao {
 
              // Step 2:Create a statement using connection object
             preparedStatement = connection.prepareStatement(INSERT_USERS_SQL);
-            preparedStatement.setInt(1, patient.getId());
+            preparedStatement.setString(1, patient.getId());
             preparedStatement.setString(2, patient.getFirstName());
             preparedStatement.setString(3, patient.getLastName());
             preparedStatement.setString(4, patient.getDistrict());
             preparedStatement.setInt(5, patient.getLocationX());
             preparedStatement.setInt(6, patient.getLocationY());
-            preparedStatement.setString(7, patient.getSeverityLevel());
-            preparedStatement.setString(8, patient.getGender());
-            preparedStatement.setString(9, patient.getContact());
-            preparedStatement.setString(10, patient.getEmail());
-            preparedStatement.setInt(11, patient.getAge());
-            preparedStatement.setDate(12, patient.getAdmitDate());
+            //preparedStatement.setString(7, patient.getSeverityLevel());
+            preparedStatement.setString(7, patient.getGender());
+            preparedStatement.setString(8, patient.getContact());
+            preparedStatement.setString(9, patient.getEmail());
+            preparedStatement.setInt(10, patient.getAge());
+            /*preparedStatement.setDate(12, patient.getAdmitDate());
             preparedStatement.setString(13, patient.getAdmittedBy());
             preparedStatement.setDate(14, patient.getDischargeDate());
-            preparedStatement.setString(15, patient.getDischargedBy());
+            preparedStatement.setString(15, patient.getDischargedBy());*/
 
             System.out.println(preparedStatement);
             // Step 3: Execute the query or update query

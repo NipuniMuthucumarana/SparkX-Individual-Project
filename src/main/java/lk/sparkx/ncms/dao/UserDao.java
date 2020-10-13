@@ -1,10 +1,10 @@
 package lk.sparkx.ncms.dao;
 
+import lk.sparkx.ncms.models.User;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
-import lk.sparkx.ncms.models.User;
 
 public class UserDao {
     public String viewStatistics(User user) {

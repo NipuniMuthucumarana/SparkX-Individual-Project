@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import java.sql.Date;
 
 public class Patient {
-    private int id;
+    private String id;
     private String firstName;
     private String lastName;
     private String district;
@@ -21,11 +21,11 @@ public class Patient {
     private Date dischargeDate;
     private String dischargedBy;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

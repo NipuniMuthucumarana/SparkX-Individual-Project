@@ -20,8 +20,6 @@ public class StatisticsServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String hospitalName = request.getParameter("name");
-        String district = request.getParameter("district");
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -29,6 +27,8 @@ public class StatisticsServlet extends HttpServlet {
         PreparedStatement statement3 = null;
         PreparedStatement statement4 = null;
         PreparedStatement statement5 = null;
+        PreparedStatement statement6 = null;
+        PreparedStatement statement7 = null;
         int result = 0;
 
         try {
@@ -38,40 +38,58 @@ public class StatisticsServlet extends HttpServlet {
             ResultSet resultSet3;
             ResultSet resultSet4;
             ResultSet resultSet5;
+            ResultSet resultSet6;
+            ResultSet resultSet7;
 
-            statement = connection.prepareStatement("SELECT COUNT(hospital_bed.id) AS hospitalLevel FROM hospital_bed INNER JOIN hospital ON hospital_bed.hospital_id = hospital.id WHERE hospital.name ='"+hospitalName+"'");
+            //statement = connection.prepareStatement("SELECT COUNT(hospital_bed.id) AS hospitalLevel FROM hospital_bed INNER JOIN hospital ON hospital_bed.hospital_id = hospital.id WHERE hospital.name ='"+hospitalName+"'");
+            statement = connection.prepareStatement("SELECT name FROM hospital");
+
             //statement.setString(1, hospitalId);
             System.out.println(statement);
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                int patientCount = resultSet.getInt("hospitalLevel");
-                System.out.println(patientCount);
-                PrintWriter printWriter = response.getWriter();
-
-                printWriter.println("Hospital name: " + hospitalName);
-                printWriter.println("Hospital Level Statistics: " + patientCount);
-                printWriter.println("\n");
-            }
-
-            statement2 = connection.prepareStatement("SELECT COUNT(hospital_bed.id) AS districtLevel FROM hospital_bed INNER JOIN hospital ON hospital_bed.hospital_id = hospital.id WHERE hospital.district ='"+district+"'");
-            statement5 = connection.prepareStatement("SELECT COUNT(patient_queue.id) AS queueDistrictLevel FROM patient_queue INNER JOIN patient ON patient.id = patient_queue.patient_id WHERE patient.district ='"+district+"'");
-            System.out.println(statement2);
-            System.out.println(statement5);
-            resultSet2 = statement2.executeQuery();
-            resultSet5 = statement5.executeQuery();
-
-            while (resultSet2.next()) {
-                int disPatientCount = resultSet2.getInt("districtLevel");
-                while (resultSet5.next()) {
-                    int queueDisPatient = resultSet5.getInt("queueDistrictLevel");
-                    int districtPatientCount = disPatientCount + queueDisPatient;
-                    System.out.println(districtPatientCount);
+                String  hospital = resultSet.getString("name");
+                statement6 = connection.prepareStatement("SELECT COUNT(hospital_bed.id) AS hospitalLevel FROM hospital_bed INNER JOIN hospital ON hospital_bed.hospital_id = hospital.id WHERE hospital.name ='"+hospital+"'");
+                System.out.println(statement6);
+                resultSet6 = statement6.executeQuery();
+                while (resultSet6.next()) {
+                    int patientCount = resultSet6.getInt("hospitalLevel");
+                    System.out.println(patientCount);
                     PrintWriter printWriter = response.getWriter();
 
-                    printWriter.println("District: " + district);
-                    printWriter.println("District Level Statistics: " + districtPatientCount);
+                    printWriter.println("Hospital name: " + hospital);
+                    printWriter.println("Hospital Level Statistics: " + patientCount);
+                    request.setAttribute("hosPatientCount", patientCount);
                     printWriter.println("\n");
+                }
+            }
+
+            statement7 = connection.prepareStatement("SELECT district FROM hospital");
+            System.out.println(statement7);
+            resultSet7 = statement7.executeQuery();
+            while (resultSet7.next()) {
+                String  district = resultSet7.getString("district");
+                statement2 = connection.prepareStatement("SELECT COUNT(hospital_bed.id) AS districtLevel FROM hospital_bed INNER JOIN hospital ON hospital_bed.hospital_id = hospital.id WHERE hospital.district ='" + district + "'");
+                statement5 = connection.prepareStatement("SELECT COUNT(patient_queue.id) AS queueDistrictLevel FROM patient_queue INNER JOIN patient ON patient.id = patient_queue.patient_id WHERE patient.district ='" + district + "'");
+                System.out.println(statement2);
+                System.out.println(statement5);
+                resultSet2 = statement2.executeQuery();
+                resultSet5 = statement5.executeQuery();
+
+                while (resultSet2.next()) {
+                    int disPatientCount = resultSet2.getInt("districtLevel");
+                    while (resultSet5.next()) {
+                        int queueDisPatient = resultSet5.getInt("queueDistrictLevel");
+                        int districtPatientCount = disPatientCount + queueDisPatient;
+                        System.out.println(districtPatientCount);
+                        PrintWriter printWriter = response.getWriter();
+
+                        printWriter.println("District: " + district);
+                        printWriter.println("District Level Statistics: " + districtPatientCount);
+                        request.setAttribute("disPatientCount", districtPatientCount);
+                        printWriter.println("\n");
+                    }
                 }
             }
 
@@ -91,6 +109,7 @@ public class StatisticsServlet extends HttpServlet {
                     PrintWriter printWriter = response.getWriter();
 
                     printWriter.println("Country Level Statistics: " + countryPatientCount);
+                    request.setAttribute("couPatientCount", "50");
                 }
             }
             connection.close();

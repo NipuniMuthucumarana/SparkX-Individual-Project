@@ -25,19 +25,19 @@ public class PatientServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
+        String id = request.getParameter("id");
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String district = request.getParameter("district");
         int locationX = Integer.parseInt(request.getParameter("locationX"));
         int locationY = Integer.parseInt(request.getParameter("locationY"));
-        String severityLevel = request.getParameter("severityLevel");
+        //String severityLevel = request.getParameter("severityLevel");
         String gender = request.getParameter("gender");
         String contact = request.getParameter("contact");
         String email = request.getParameter("email");
         int age = Integer.parseInt(request.getParameter("age"));
 
-        java.util.Date dateAdmit = new java.util.Date();
+        /*java.util.Date dateAdmit = new java.util.Date();
         Date admitDate = new Date(dateAdmit.getTime());
 
         String admittedBy = request.getParameter("admittedBy");
@@ -45,7 +45,7 @@ public class PatientServlet extends HttpServlet {
         java.util.Date dateDischarged = new java.util.Date();
         Date dischargeDate = new Date(dateDischarged.getTime());
 
-        String dischargedBy = request.getParameter("dischargedBy");
+        String dischargedBy = request.getParameter("dischargedBy");*/
 
         
         Patient patient = new Patient();
@@ -55,15 +55,15 @@ public class PatientServlet extends HttpServlet {
         patient.setDistrict(district);
         patient.setLocationX(locationX);
         patient.setLocationY(locationY);
-        patient.setSeverityLevel(severityLevel);
+        //patient.setSeverityLevel(severityLevel);
         patient.setGender(gender);
         patient.setContact(contact);
         patient.setEmail(email);
         patient.setAge(age);
-        patient.setAdmitDate(admitDate);
+        /*patient.setAdmitDate(admitDate);
         patient.setAdmittedBy(admittedBy);
         patient.setDischargeDate(dischargeDate);
-        patient.setDischargedBy(dischargedBy);
+        patient.setDischargedBy(dischargedBy);*/
 
         PatientDao patientDao = new PatientDao();
         String patientRegistered = patientDao.registerPatient(patient);
