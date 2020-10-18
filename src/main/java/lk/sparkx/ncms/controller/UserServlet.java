@@ -29,19 +29,15 @@ public class UserServlet extends HttpServlet {
         UserDao userDao = new UserDao();
         String userRegistered = userDao.viewStatistics(user);
 
-        if(userRegistered.equals("SUCCESS"))   //On success, you can display a message to user on Home page
-        {
+        if(userRegistered.equals("SUCCESS")) {  //On success
             System.out.println("Success");
-        }
-        else   //On Failure, display a meaningful message to the User.
-        {
+        } else { //On Failure
             System.out.println("Failed");
         }
 
         try {
             userDao.viewStatistics(user);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

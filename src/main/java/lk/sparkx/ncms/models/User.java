@@ -81,9 +81,7 @@ public class User {
                 this.isMoh = resultSet.getBoolean("isMoh");
                 this.isHospital = resultSet.getBoolean("isHospital");
             }
-
             connection.close();
-
         } catch (Exception exception) {
 
         }

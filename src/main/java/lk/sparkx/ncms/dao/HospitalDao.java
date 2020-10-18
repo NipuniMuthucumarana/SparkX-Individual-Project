@@ -9,7 +9,6 @@ import java.sql.SQLException;
 public class HospitalDao {
     public String registerHospital(Hospital hospital) {
         String INSERT_USERS_SQL = "INSERT INTO hospital (id, name, district, location_x, location_y, build_date) VALUES (?, ?, ?, ?, ?, ?)";
-
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         int result = 0;
@@ -35,28 +34,8 @@ public class HospitalDao {
 
         } catch (SQLException e) {
             // process sql exception
-            printSQLException(e);
+            System.out.println(e);
         }
         return "Oops.. Something went wrong there..!"; // On failure, send a message from here.
-    }
-
-    public  void buildHospital(String patientId){
-
-    }
-
-    private void printSQLException(SQLException ex) {
-        for (Throwable e: ex) {
-            if (e instanceof SQLException) {
-                e.printStackTrace(System.err);
-                System.err.println("SQLState: " + ((SQLException) e).getSQLState());
-                System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
-                System.err.println("Message: " + e.getMessage());
-                Throwable t = ex.getCause();
-                while (t != null) {
-                    System.out.println("Cause: " + t);
-                    t = t.getCause();
-                }
-            }
-        }
     }
 }

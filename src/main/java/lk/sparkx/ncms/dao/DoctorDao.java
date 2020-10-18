@@ -1,15 +1,15 @@
 package lk.sparkx.ncms.dao;
 
+import lk.sparkx.ncms.models.Doctor;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import lk.sparkx.ncms.models.Doctor;
 
 public class DoctorDao {
     public String registerDoctor(Doctor doctor) {
         String INSERT_USERS_SQL = "INSERT INTO doctor (id, name, hospital_id, is_director) VALUES (?, ?, ?, ?)";
-
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         int result = 0;
@@ -36,6 +36,58 @@ public class DoctorDao {
             printSQLException(e);
         }
         return "Oops.. Something went wrong there..!"; // On failure, send a message from here.
+    }
+
+    public void admitPatients(String patientId, String DoctorId, String severityLevel) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        int result = 0;
+
+        try {
+            connection = DBConnectionPool.getInstance().getConnection();
+            ResultSet resultSet;
+
+            statement = connection.prepareStatement("UPDATE patient SET severity_level='"+severityLevel+"', admit_date=?, admitted_by='"+DoctorId+"' WHERE id='"+patientId+"'");
+            statement.setDate(1, new java.sql.Date(new java.util.Date().getTime()));
+            result = statement.executeUpdate();
+            System.out.println(statement);
+
+            connection.close();
+        } catch (Exception exception) {
+
+        }
+    }
+
+    public void dischargePatients(String patientId, String hospitalId) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        PreparedStatement statement2 = null;
+        int result = 0;
+
+        try {
+            connection = DBConnectionPool.getInstance().getConnection();
+            ResultSet resultSet;
+
+            statement2 = connection.prepareStatement("SELECT * FROM doctor WHERE hospital_id='" +hospitalId + "' AND is_director=1");
+            resultSet = statement2.executeQuery();
+            System.out.println(statement2);
+            while (resultSet.next()) {
+                String director = resultSet.getString("id");
+                System.out.println(director);
+                statement = connection.prepareStatement("UPDATE patient SET discharge_date=? , discharged_by= '" + director + "' WHERE id = '" + patientId + "'");
+                statement.setDate(1, new java.sql.Date(new java.util.Date().getTime()));
+                System.out.println(statement);
+                result = statement.executeUpdate();
+
+                if(result!=0) {
+                    System.out.println("success");
+                } else
+                    System.out.println("Failed");
+            }
+            connection.close();
+        } catch (Exception exception) {
+
+        }
     }
 
     private void printSQLException(SQLException ex) {

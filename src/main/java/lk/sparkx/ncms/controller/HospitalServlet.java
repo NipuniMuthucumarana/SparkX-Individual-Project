@@ -1,9 +1,9 @@
 package lk.sparkx.ncms.controller;
 
 import lk.sparkx.ncms.dao.DBConnectionPool;
+import lk.sparkx.ncms.dao.DoctorDao;
 import lk.sparkx.ncms.dao.HospitalDao;
 import lk.sparkx.ncms.models.Bed;
-import lk.sparkx.ncms.models.Doctor;
 import lk.sparkx.ncms.models.Hospital;
 
 import javax.servlet.ServletException;
@@ -40,28 +40,15 @@ public class HospitalServlet extends HttpServlet {
         HospitalDao hospitalDao = new HospitalDao();
         String hospitalRegistered = hospitalDao.registerHospital(hospital);
 
-        if(hospitalRegistered.equals("SUCCESS"))   //On success, you can display a message to user on Home page
-        {
+        if(hospitalRegistered.equals("SUCCESS")) {  //On success, can display a message to user
             System.out.println("Success");
-        }
-        else   //On Failure, display a meaningful message to the User.
-        {
+        } else {  //On Failure, display a message to the User.
             System.out.println("Failed");
         }
-
-        String patientId = request.getParameter("id");
-        String hospitalId = request.getParameter("hospital_id");
-
-        Doctor doctor = new Doctor();
-        doctor.dischargePatients(patientId, hospitalId);
-
-        Bed bed = new Bed();
-        bed.makeAvailable(patientId, hospitalId);
 
         try {
             hospitalDao.registerHospital(hospital);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -75,7 +62,6 @@ public class HospitalServlet extends HttpServlet {
 
         try {
             connection = DBConnectionPool.getInstance().getConnection();
-            //PreparedStatement statement;
             ResultSet resultSet;
 
             statement = connection.prepareStatement("SELECT * FROM hospital WHERE district=?");
@@ -100,7 +86,6 @@ public class HospitalServlet extends HttpServlet {
                 printWriter.println("Location_Y: " + locationY);
                 printWriter.println("Build Date: " + buildDate);
                 System.out.println("doGet doctor success");
-
             }
             connection.close();
 
@@ -117,7 +102,7 @@ public class HospitalServlet extends HttpServlet {
         String patientId = request.getParameter("id");
         String hospitalId = request.getParameter("hospital_id");
 
-        Doctor doctor = new Doctor();
+        DoctorDao doctor = new DoctorDao();
         doctor.dischargePatients(patientId, hospitalId);
 
         Bed bed = new Bed();

@@ -1,6 +1,8 @@
 package lk.sparkx.ncms.controller;
 
 import lk.sparkx.ncms.dao.DBConnectionPool;
+import org.json.JSONArray;
+import org.json.simple.JSONObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,6 +22,9 @@ public class StatisticsServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        JSONObject stats=new JSONObject(); //create a JSON Object stats.
+        JSONArray jArray = new JSONArray(); //create a JSON Array jArray.
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -41,10 +46,7 @@ public class StatisticsServlet extends HttpServlet {
             ResultSet resultSet6;
             ResultSet resultSet7;
 
-            //statement = connection.prepareStatement("SELECT COUNT(hospital_bed.id) AS hospitalLevel FROM hospital_bed INNER JOIN hospital ON hospital_bed.hospital_id = hospital.id WHERE hospital.name ='"+hospitalName+"'");
             statement = connection.prepareStatement("SELECT name FROM hospital");
-
-            //statement.setString(1, hospitalId);
             System.out.println(statement);
             resultSet = statement.executeQuery();
 
@@ -57,10 +59,10 @@ public class StatisticsServlet extends HttpServlet {
                     int patientCount = resultSet6.getInt("hospitalLevel");
                     System.out.println(patientCount);
                     PrintWriter printWriter = response.getWriter();
-
                     printWriter.println("Hospital name: " + hospital);
                     printWriter.println("Hospital Level Statistics: " + patientCount);
                     request.setAttribute("hosPatientCount", patientCount);
+                    stats.put(hospital, patientCount);
                     printWriter.println("\n");
                 }
             }
@@ -87,6 +89,7 @@ public class StatisticsServlet extends HttpServlet {
 
                         printWriter.println("District: " + district);
                         printWriter.println("District Level Statistics: " + districtPatientCount);
+                        stats.put(district, districtPatientCount);
                         request.setAttribute("disPatientCount", districtPatientCount);
                         printWriter.println("\n");
                     }
@@ -109,10 +112,19 @@ public class StatisticsServlet extends HttpServlet {
                     PrintWriter printWriter = response.getWriter();
 
                     printWriter.println("Country Level Statistics: " + countryPatientCount);
+                    stats.put("country", countryPatientCount);
                     request.setAttribute("couPatientCount", "50");
                 }
             }
+
+            jArray.put(stats);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(jArray.toString());
+            //response.sendRedirect("file:///F:/SPARK/Project/Front-end/NCMS/index.html?name=&district=#section-counter");
+            System.out.println(jArray.toString());
             connection.close();
+            stats.clear();
 
         } catch (Exception exception) {
 

@@ -22,10 +22,6 @@ public class Hospital {
     private int locationY;
     private Date buildDate;
 
-    public Hospital() {
-
-    }
-
     public Hospital(String district){
         this.district = district;
     }

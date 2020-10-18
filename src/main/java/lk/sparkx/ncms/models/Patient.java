@@ -163,37 +163,4 @@ public class Patient {
 
         return data;
     }
-
-    /*public void getModel() {
-        try {
-            Connection connection = DBConnectionPool.getInstance().getConnection();
-            PreparedStatement statement;
-            ResultSet resultSet;
-
-            statement = connection.prepareStatement("SELECT * FROM patients WHERE id=? LIMIT 1");
-            statement.setInt(1, this.id);
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                this.id = resultSet.getInt("id");
-                this.firstName = resultSet.getString("first_name");
-                this.lastName = resultSet.getString("last_name");
-                this.district = resultSet.getString("district");
-                this.locationX = resultSet.getInt("location_x");
-                this.locationY = resultSet.getInt("location_y");
-                this.severityLevel = resultSet.getString("severity_level");
-                this.gender = resultSet.getString("gender");
-                this.contact = resultSet.getString("contact");
-                this.email = resultSet.getString("email");
-                this.age = resultSet.getInt("age");
-                this.admitDate = resultSet.getDate("admit_date");
-                this.admittedBy = resultSet.getString("admitted_by");
-                this.dischargeDate = resultSet.getDate("discharge_date");
-                this.dischargedBy = resultSet.getString("discharged_by");
-            }
-
-            connection.close();
-        } catch (Exception exception) {
-
-        }
-    }*/
 }
