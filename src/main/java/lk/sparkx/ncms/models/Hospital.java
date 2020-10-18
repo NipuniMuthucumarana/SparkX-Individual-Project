@@ -26,6 +26,10 @@ public class Hospital {
         this.district = district;
     }
 
+    public Hospital() {
+
+    }
+
     public String getId() {
         return id;
     }
