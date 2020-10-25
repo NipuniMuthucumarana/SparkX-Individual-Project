@@ -1,5 +1,7 @@
 package lk.sparkx.ncms.controller;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import lk.sparkx.ncms.dao.DBConnectionPool;
 import lk.sparkx.ncms.dao.DoctorDao;
 import lk.sparkx.ncms.dao.HospitalDao;
@@ -54,7 +56,7 @@ public class HospitalServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String district = request.getParameter("district");
+        JsonArray hospitalArray = new JsonArray();
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -64,29 +66,44 @@ public class HospitalServlet extends HttpServlet {
             connection = DBConnectionPool.getInstance().getConnection();
             ResultSet resultSet;
 
-            statement = connection.prepareStatement("SELECT * FROM hospital WHERE district=?");
-            statement.setString(1, district);
+            statement = connection.prepareStatement("SELECT * FROM hospital");
+            //statement.setString(1, district);
             System.out.println(statement);
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 String id = resultSet.getString("id");
                 String name = resultSet.getString("name");
-                //String district = resultSet.getString("district");
+                String district = resultSet.getString("district");
                 int locationX = resultSet.getInt("location_x");
                 int locationY = resultSet.getInt("location_y");
                 Date buildDate = resultSet.getDate("build_date");
 
                 PrintWriter printWriter = response.getWriter();
 
-                printWriter.println("Id: " + id);
+                JsonObject hospitalDetails = new JsonObject();
+                hospitalDetails.addProperty("Id", id);
+                hospitalDetails.addProperty("name", name);
+                hospitalDetails.addProperty("district", district);
+                hospitalDetails.addProperty("locationX", locationX);
+                hospitalDetails.addProperty("locationY", locationY);
+                hospitalDetails.addProperty("buildDate", String.valueOf(buildDate));
+                hospitalArray.add(hospitalDetails);
+
+                /*printWriter.println("Id: " + id);
                 printWriter.println("Name: " + name);
                 printWriter.println("District: " + district);
                 printWriter.println("Location_X: " + locationX);
                 printWriter.println("Location_Y: " + locationY);
                 printWriter.println("Build Date: " + buildDate);
-                System.out.println("doGet doctor success");
+                System.out.println("doGet doctor success");*/
             }
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(hospitalArray.toString());
+            System.out.println(hospitalArray.toString());
+            connection.close();
+
             connection.close();
 
         } catch (Exception exception) {

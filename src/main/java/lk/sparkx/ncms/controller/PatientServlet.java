@@ -1,5 +1,7 @@
 package lk.sparkx.ncms.controller;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import lk.sparkx.ncms.dao.DBConnectionPool;
 import lk.sparkx.ncms.dao.PatientDao;
 import lk.sparkx.ncms.models.Patient;
@@ -64,7 +66,9 @@ public class PatientServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String id = request.getParameter("id");
+        //String id = request.getParameter("id");
+        //JsonObject patientDetails = new JsonObject(); //create a JSON Object stats.
+        JsonArray patientArray = new JsonArray();
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -76,13 +80,13 @@ public class PatientServlet extends HttpServlet {
             ResultSet resultSet;
             ResultSet resultSet2;
 
-            statement = connection.prepareStatement("SELECT * FROM patient WHERE id=?");
-            statement.setString(1, id);
+            statement = connection.prepareStatement("SELECT * FROM patient");
+            //statement.setString(1, id);
             System.out.println(statement);
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                //String id = resultSet.getString("id");
+                String id = resultSet.getString("id");
                 String firstName = resultSet.getString("first_name");
                 String lastName = resultSet.getString("last_name");
                 String district = resultSet.getString("district");
@@ -100,7 +104,25 @@ public class PatientServlet extends HttpServlet {
 
                 PrintWriter printWriter = response.getWriter();
 
-                printWriter.println("Id: " + id);
+                JsonObject patientDetails = new JsonObject();
+                patientDetails.addProperty("Id", id);
+                patientDetails.addProperty("Firstname", firstName);
+                patientDetails.addProperty("Lastname", lastName);
+                patientDetails.addProperty("District", district);
+                patientDetails.addProperty("Location_X", locationX);
+                patientDetails.addProperty("Location_Y", locationY);
+                patientDetails.addProperty("SeverityLevel", severityLevel);
+                patientDetails.addProperty("Gender", gender);
+                patientDetails.addProperty("Contact", contact);
+                patientDetails.addProperty("Email", email);
+                patientDetails.addProperty("Age", age);
+                patientDetails.addProperty("AdmitDate", String.valueOf(admitDate));
+                patientDetails.addProperty("AdmittedBy", admittedBy);
+                patientDetails.addProperty("DischargeDate", String.valueOf(dischargeDate));
+                patientDetails.addProperty("DischargedBy", dischargedBy);
+                patientArray.add(patientDetails);
+
+                /*printWriter.println("Id: " + id);
                 printWriter.println("First name: " + firstName);
                 printWriter.println("Last name: " + lastName);
                 printWriter.println("District: " + district);
@@ -115,8 +137,13 @@ public class PatientServlet extends HttpServlet {
                 printWriter.println("Admitted By: " + admittedBy);
                 printWriter.println("Discharge Date: " + dischargeDate);
                 printWriter.println("Discharged By: " + dischargedBy);
-                System.out.println("doGet patient success");
+                System.out.println("doGet patient success");*/
             }
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(patientArray.toString());
+            System.out.println(patientArray.toString());
             connection.close();
 
         } catch (Exception exception) {
@@ -124,4 +151,70 @@ public class PatientServlet extends HttpServlet {
         }
     }
 
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getParameter("id");
+
+        JsonArray sendToPatientArray = new JsonArray();
+        JsonArray sendToQueueArray = new JsonArray();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        PreparedStatement statement2 = null;
+        int result = 0;
+
+        try {
+            connection = DBConnectionPool.getInstance().getConnection();
+            ResultSet resultSet;
+            ResultSet resultSet2;
+
+            statement = connection.prepareStatement("SELECT patient.serial_no, hospital_bed.id AS bed_id, hospital.name, hospital.district FROM patient INNER  JOIN hospital_bed ON patient.id=hospital_bed.patient_id INNER JOIN hospital ON hospital_bed.hospital_id=hospital.id where patient.id ='"+id+"'");
+            System.out.println(statement);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String serialNo = resultSet.getString("serial_no");
+                String bedId = resultSet.getString("bed_id");
+                String name = resultSet.getString("name");
+                String district = resultSet.getString("district");
+
+                PrintWriter printWriter = response.getWriter();
+
+                JsonObject sendToPatient = new JsonObject();
+                sendToPatient.addProperty("Id", id);
+                sendToPatient.addProperty("serialNo", serialNo);
+                sendToPatient.addProperty("bedId", bedId);
+                sendToPatient.addProperty("District", district);
+                sendToPatientArray.add(sendToPatient);
+            }
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            //response.getWriter().write(sendToPatientArray.toString());
+            //System.out.println(sendToPatientArray.toString());
+
+            if(sendToPatientArray.size()!=0) {
+                response.getWriter().write(sendToPatientArray.toString());
+                System.out.println(sendToPatientArray.toString());
+            } else {
+                statement2 = connection.prepareStatement("SELECT patient_queue.id as queueId FROM patient_queue INNER  JOIN patient ON patient.id=patient_queue.patient_id where patient.id ='"+id+"'");
+                System.out.println(statement2);
+                resultSet2 = statement2.executeQuery();
+                while (resultSet2.next()) {
+                    int queueId = resultSet2.getInt("queueId");
+                    PrintWriter printWriter = response.getWriter();
+
+                    JsonObject sendToPatientQueue = new JsonObject();
+                    sendToPatientQueue.addProperty("Id", id);
+                    sendToPatientQueue.addProperty("queueId", queueId);
+                    sendToQueueArray.add(sendToPatientQueue);
+                }
+                response.getWriter().write(sendToQueueArray.toString());
+                System.out.println(sendToQueueArray.toString());
+            }
+            connection.close();
+
+        } catch (Exception exception) {
+
+        }
+
+    }
 }
