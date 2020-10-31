@@ -2,7 +2,7 @@ package lk.sparkx.ncms.controller;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import lk.sparkx.ncms.dao.DBConnectionPool;
+import lk.sparkx.ncms.util.DBConnectionPool;
 import lk.sparkx.ncms.dao.PatientDao;
 import lk.sparkx.ncms.models.Patient;
 
@@ -182,6 +182,7 @@ public class PatientServlet extends HttpServlet {
                 sendToPatient.addProperty("Id", id);
                 sendToPatient.addProperty("serialNo", serialNo);
                 sendToPatient.addProperty("bedId", bedId);
+                sendToPatient.addProperty("Hospital Name", name);
                 sendToPatient.addProperty("District", district);
                 sendToPatientArray.add(sendToPatient);
             }

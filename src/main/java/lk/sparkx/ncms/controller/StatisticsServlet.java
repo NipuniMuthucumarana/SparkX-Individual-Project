@@ -2,7 +2,7 @@ package lk.sparkx.ncms.controller;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import lk.sparkx.ncms.dao.DBConnectionPool;
+import lk.sparkx.ncms.util.DBConnectionPool;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -75,7 +75,7 @@ public class StatisticsServlet extends HttpServlet {
                 }
                 stats.add("hospitalLevelStats", jArray);
             }else if (method.equals("districtLevel")) {
-                statement7 = connection.prepareStatement("SELECT district FROM hospital");
+                statement7 = connection.prepareStatement("SELECT distinct district FROM hospital");
                 System.out.println(statement7);
                 resultSet7 = statement7.executeQuery();
                 while (resultSet7.next()) {

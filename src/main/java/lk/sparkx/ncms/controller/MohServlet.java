@@ -2,7 +2,7 @@ package lk.sparkx.ncms.controller;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import lk.sparkx.ncms.dao.DBConnectionPool;
+import lk.sparkx.ncms.util.DBConnectionPool;
 import lk.sparkx.ncms.dao.MohDao;
 import lk.sparkx.ncms.models.User;
 

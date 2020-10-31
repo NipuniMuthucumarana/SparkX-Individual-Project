@@ -1,7 +1,7 @@
 package lk.sparkx.ncms.models;
 
 import com.google.gson.JsonObject;
-import lk.sparkx.ncms.dao.DBConnectionPool;
+import lk.sparkx.ncms.util.DBConnectionPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

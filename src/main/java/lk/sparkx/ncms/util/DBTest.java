@@ -1,13 +1,9 @@
-package lk.sparkx.ncms.dao;
+package lk.sparkx.ncms.util;
 
 import java.sql.*;
 import java.util.UUID;
 
-/**
- * Created by: thisum
- * Date      : 2020-08-28
- * Time      : 00:33
- **/
+
 
 public class DBTest
 {

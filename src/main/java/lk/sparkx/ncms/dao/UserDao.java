@@ -1,6 +1,7 @@
 package lk.sparkx.ncms.dao;
 
 import lk.sparkx.ncms.models.User;
+import lk.sparkx.ncms.util.DBConnectionPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

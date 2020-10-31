@@ -3,6 +3,7 @@ package lk.sparkx.ncms.dao;
 import lk.sparkx.ncms.models.Bed;
 import lk.sparkx.ncms.models.Hospital;
 import lk.sparkx.ncms.models.Patient;
+import lk.sparkx.ncms.util.DBConnectionPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

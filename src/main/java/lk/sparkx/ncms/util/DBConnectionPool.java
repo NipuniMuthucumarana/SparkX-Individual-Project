@@ -1,4 +1,4 @@
-package lk.sparkx.ncms.dao;
+package lk.sparkx.ncms.util;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
