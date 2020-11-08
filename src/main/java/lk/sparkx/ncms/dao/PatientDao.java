@@ -1,14 +1,13 @@
 package lk.sparkx.ncms.dao;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import lk.sparkx.ncms.models.Bed;
 import lk.sparkx.ncms.models.Hospital;
 import lk.sparkx.ncms.models.Patient;
 import lk.sparkx.ncms.util.DBConnectionPool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class PatientDao {
     public String registerPatient(Patient patient) {
@@ -78,5 +77,124 @@ public class PatientDao {
             System.out.println(e);
         }
         return "Oops.. Something went wrong there..!"; // On failure, send a message from here.
+    }
+
+    //view patient details
+    public JsonArray viewPatient() {
+        JsonArray patientArray = new JsonArray();
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        PreparedStatement statement2 = null;
+        int result = 0;
+
+        try {
+            connection = DBConnectionPool.getInstance().getConnection();
+            ResultSet resultSet;
+            ResultSet resultSet2;
+
+            statement = connection.prepareStatement("SELECT * FROM patient");
+            //statement.setString(1, id);
+            System.out.println(statement);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String id = resultSet.getString("id");
+                String firstName = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
+                String district = resultSet.getString("district");
+                int locationX = resultSet.getInt("location_x");
+                int locationY = resultSet.getInt("location_y");
+                String severityLevel = resultSet.getString("severity_level");
+                String gender = resultSet.getString("gender");
+                String contact = resultSet.getString("contact");
+                String email = resultSet.getString("email");
+                int age = resultSet.getInt("age");
+                Date admitDate = resultSet.getDate("admit_date");
+                String admittedBy = resultSet.getString("admitted_by");
+                Date dischargeDate = resultSet.getDate("discharge_date");
+                String dischargedBy = resultSet.getString("discharged_by");
+
+                JsonObject patientDetails = new JsonObject();
+                patientDetails.addProperty("Id", id);
+                patientDetails.addProperty("Firstname", firstName);
+                patientDetails.addProperty("Lastname", lastName);
+                patientDetails.addProperty("District", district);
+                patientDetails.addProperty("Location_X", locationX);
+                patientDetails.addProperty("Location_Y", locationY);
+                patientDetails.addProperty("SeverityLevel", severityLevel);
+                patientDetails.addProperty("Gender", gender);
+                patientDetails.addProperty("Contact", contact);
+                patientDetails.addProperty("Email", email);
+                patientDetails.addProperty("Age", age);
+                patientDetails.addProperty("AdmitDate", String.valueOf(admitDate));
+                patientDetails.addProperty("AdmittedBy", admittedBy);
+                patientDetails.addProperty("DischargeDate", String.valueOf(dischargeDate));
+                patientDetails.addProperty("DischargedBy", dischargedBy);
+                patientArray.add(patientDetails);
+
+            }
+            connection.close();
+
+        } catch (Exception exception) {
+
+        }
+        return patientArray;
+    }
+
+    //view patient details
+    public JsonArray alertPatient(String id) {
+        JsonArray sendToPatientArray = new JsonArray();
+        JsonArray sendToQueueArray = new JsonArray();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        PreparedStatement statement2 = null;
+        int result = 0;
+
+        try {
+            connection = DBConnectionPool.getInstance().getConnection();
+            ResultSet resultSet;
+            ResultSet resultSet2;
+
+            statement = connection.prepareStatement("SELECT patient.serial_no, hospital_bed.id AS bed_id, hospital.name, hospital.district FROM patient INNER  JOIN hospital_bed ON patient.id=hospital_bed.patient_id INNER JOIN hospital ON hospital_bed.hospital_id=hospital.id where patient.id ='"+id+"'");
+            System.out.println(statement);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String serialNo = resultSet.getString("serial_no");
+                String bedId = resultSet.getString("bed_id");
+                String name = resultSet.getString("name");
+                String district = resultSet.getString("district");
+
+                JsonObject sendToPatient = new JsonObject();
+                sendToPatient.addProperty("Id", id);
+                sendToPatient.addProperty("serialNo", serialNo);
+                sendToPatient.addProperty("bedId", bedId);
+                sendToPatient.addProperty("Hospital Name", name);
+                sendToPatient.addProperty("District", district);
+                sendToPatientArray.add(sendToPatient);
+            }
+
+            if(sendToPatientArray.size()!=0) {
+                System.out.println(sendToPatientArray.toString());
+            } else {
+                statement2 = connection.prepareStatement("SELECT patient_queue.id as queueId FROM patient_queue INNER  JOIN patient ON patient.id=patient_queue.patient_id where patient.id ='"+id+"'");
+                System.out.println(statement2);
+                resultSet2 = statement2.executeQuery();
+                while (resultSet2.next()) {
+                    int queueId = resultSet2.getInt("queueId");
+
+                    JsonObject sendToPatientQueue = new JsonObject();
+                    sendToPatientQueue.addProperty("Id", id);
+                    sendToPatientQueue.addProperty("queueId", queueId);
+                    sendToPatientArray.add(sendToPatientQueue);
+                }
+            }
+            connection.close();
+
+        } catch (Exception exception) {
+
+        }
+        return sendToPatientArray;
     }
 }

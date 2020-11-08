@@ -1,5 +1,7 @@
 package lk.sparkx.ncms.dao;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import lk.sparkx.ncms.models.Doctor;
 import lk.sparkx.ncms.util.DBConnectionPool;
 
@@ -9,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DoctorDao {
+    //doctor registration
     public String registerDoctor(Doctor doctor) {
         String INSERT_USERS_SQL = "INSERT INTO doctor (id, name, hospital_id, is_director) VALUES (?, ?, ?, ?)";
         Connection connection = null;
@@ -39,6 +42,49 @@ public class DoctorDao {
         return "Oops.. Something went wrong there..!"; // On failure, send a message from here.
     }
 
+    //view doctor details
+    public JsonArray viewDoctor() {
+        JsonArray doctorArray = new JsonArray();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        PreparedStatement statement2 = null;
+        int result = 0;
+
+        try {
+            connection = DBConnectionPool.getInstance().getConnection();
+            ResultSet resultSet;
+            ResultSet resultSet2;
+
+            statement = connection.prepareStatement("SELECT * FROM doctor");
+            //statement.setString(1, id);
+            System.out.println(statement);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String id = resultSet.getString("id");
+                String name = resultSet.getString("name");
+                String hospitalId = resultSet.getString("hospital_id");
+                boolean isDirector = resultSet.getBoolean("is_director");
+
+                //PrintWriter printWriter = response.getWriter();
+
+                JsonObject doctorDetails = new JsonObject();
+                doctorDetails.addProperty("Id", id);
+                doctorDetails.addProperty("name", name);
+                doctorDetails.addProperty("hospitalId", hospitalId);
+                doctorDetails.addProperty("isDirector", isDirector);
+                doctorArray.add(doctorDetails);
+
+            }
+            connection.close();
+
+        } catch (Exception exception) {
+
+        }
+        return doctorArray;
+    }
+
+    //admit patients
     public void admitPatients(String patientId, String DoctorId, String severityLevel) {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -54,8 +100,9 @@ public class DoctorDao {
             System.out.println(statement);
 
             connection.close();
-        } catch (Exception exception) {
-
+        } catch (SQLException e) {
+            // process sql exception
+            printSQLException(e);
         }
     }
 
@@ -86,8 +133,9 @@ public class DoctorDao {
                     System.out.println("Failed");
             }
             connection.close();
-        } catch (Exception exception) {
-
+        } catch (SQLException e) {
+            // process sql exception
+            printSQLException(e);
         }
     }
 

@@ -1,8 +1,6 @@
 package lk.sparkx.ncms.controller;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import lk.sparkx.ncms.util.DBConnectionPool;
 import lk.sparkx.ncms.dao.DoctorDao;
 import lk.sparkx.ncms.models.Doctor;
 
@@ -12,13 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 @WebServlet(name = "DoctorServlet")
 public class DoctorServlet extends HttpServlet {
+    //insert doctor details
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = request.getParameter("id");
         String name = request.getParameter("name");
@@ -46,52 +41,15 @@ public class DoctorServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
-
+    //view doctor details
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        JsonArray doctorArray = new JsonArray();
-        Connection connection = null;
-        PreparedStatement statement = null;
-        PreparedStatement statement2 = null;
-        int result = 0;
+        DoctorDao doctorDao = new DoctorDao();
+        JsonArray doctorArray = doctorDao.viewDoctor();
+        response.getWriter().write(doctorArray.toString());
 
-        try {
-            connection = DBConnectionPool.getInstance().getConnection();
-            ResultSet resultSet;
-            ResultSet resultSet2;
-
-            statement = connection.prepareStatement("SELECT * FROM doctor");
-            //statement.setString(1, id);
-            System.out.println(statement);
-            resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                String id = resultSet.getString("id");
-                String name = resultSet.getString("name");
-                String hospitalId = resultSet.getString("hospital_id");
-                boolean isDirector = resultSet.getBoolean("is_director");
-
-                PrintWriter printWriter = response.getWriter();
-
-                JsonObject doctorDetails = new JsonObject();
-                doctorDetails.addProperty("Id", id);
-                doctorDetails.addProperty("name", name);
-                doctorDetails.addProperty("hospitalId", hospitalId);
-                doctorDetails.addProperty("isDirector", isDirector);
-                doctorArray.add(doctorDetails);
-
-            }
-
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(doctorArray.toString());
-            System.out.println(doctorArray.toString());
-            connection.close();
-
-        } catch (Exception exception) {
-
-        }
     }
 
+    //Admit a patient
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         String doctorId = request.getParameter("doctor_id");
